@@ -48,6 +48,7 @@ EXPOSURE="0.0"		# Default exposure compensation
 SATURATION="1.0"	# Default saturation
 CONFIGURATION=""
 HDRFILEPREFIX="HDR"	# Prefix for the generated Gimp file
+PRESERVE_HDR=0
 
 displayHelp() {
 	echo "Create an HDR picture out of a set of bracketed images."
@@ -62,18 +63,20 @@ displayHelp() {
 	echo -e "  -c{path} \tConfiguration file for ufrraw IDFILE.ufraw"
 	echo -e "  -q\t\tQuiet"
 	echo -e "  -k\t\tDisplay progress information with kdialog"
+	echo -e "  -p\t\tPreserve hdr file"
 	echo -e "  -h\t\tThis help"
 	echo
 	echo "Report bugs to <photo@tassy.net>"
 }
 
 # test params
-while getopts aqkhg:l:e:s:c: argument
+while getopts apqkhg:l:e:s:c: argument
 do
         case $argument in
                 a)ALIGN=1;;
+		p)PRESERVE_HDR=1;;
                 q)QUIET=1;;
-		k)USEKDE=1;;
+		k)UKDE=1;;
                 h)displayHelp;exit;;
                 g)GAMMA=$OPTARG;;
 		l)LINEARITY=$OPTARG;;
@@ -141,9 +144,9 @@ if [ $filetype = "JPG" ] || [ $filetype = "CR2" ] || [ $filetype = "NEF" ]; then
 				echo "Devloping RAW files"
 			fi
 			if [ -z $CONFIGURATION ]; then
-				LC_ALL=C; ufraw-batch --wb=camera --gamma=$GAMMA --linearity=$LINEARITY --exposure=$EXPOSURE --saturation=$SATURATION --out-type=tiff --out-depth=16 --overwrite ${FILES[*]} 2>/dev/null
+				LC_ALL=C; ufraw-batch --wb=camera --gamma=$GAMMA --linearity=$LINEARITY --exposure=$EXPOSURE --saturation=$SATURATION --out-type=tif --out-depth=16 --overwrite ${FILES[*]} 2>/dev/null
 			else
-				LC_ALL=C; ufraw-batch --conf=$CONFIGURATION --out-type=tiff --out-depth=16 --overwrite ${FILES[*]} 2>/dev/null
+				LC_ALL=C; ufraw-batch --conf=$CONFIGURATION --out-type=tif --out-depth=16 --overwrite ${FILES[*]} 2>/dev/null
 			fi
 			# Also Generate a JPEG of the first image so as to save the EXIF metadata and embed it in the generated XCF
 			LC_ALL=C; ufraw-batch --wb=camera --gamma=$GAMMA --linearity=$LINEARITY --exposure=$EXPOSURE --saturation=$SATURATION --out-type=jpeg --compression=97 --overwrite --output=${FILES[0]%.*}.jpg ${FILES[0]} 2>/dev/null
@@ -153,9 +156,9 @@ if [ $filetype = "JPG" ] || [ $filetype = "CR2" ] || [ $filetype = "NEF" ]; then
 				echo "Devloping RAW files"
 			fi
 			if [ -z $CONFIGURATION ]; then
-				LC_ALL=C; ufraw-batch --wb=camera --gamma=$GAMMA --exposure=$EXPOSURE --saturation=$SATURATION --out-type=tiff --out-depth=16 --overwrite ${FILES[*]} 2>/dev/null
+				LC_ALL=C; ufraw-batch --wb=camera --gamma=$GAMMA --exposure=$EXPOSURE --saturation=$SATURATION --out-type=tif --out-depth=16 --overwrite ${FILES[*]} 2>/dev/null
 			else
-				LC_ALL=C; ufraw-batch --conf=$CONFIGURATION --out-type=tiff --out-depth=16 --overwrite ${FILES[*]} 2>/dev/null
+				LC_ALL=C; ufraw-batch --conf=$CONFIGURATION --out-type=tif --out-depth=16 --overwrite ${FILES[*]} 2>/dev/null
 			fi
 			# Also Generate a JPEG of the first image so as to save the EXIF metadata and embed it in the generated XCF
 			LC_ALL=C; ufraw-batch --wb=camera --gamma=$GAMMA --exposure=$EXPOSURE --saturation=$SATURATION --out-type=jpeg --compression=97 --overwrite --output=${FILES[0]%.*}.jpg ${FILES[0]} 2>/dev/null
@@ -265,7 +268,10 @@ if [ $filetype = "JPG" ] || [ $filetype = "CR2" ] || [ $filetype = "NEF" ]; then
 	if [ $USEKDE = 1 ]; then
 		qdbus $dbusRef setLabelText "Cleaning up"
 	fi
-	rm -f $DIR/*.tif $DIR/pfs.hdr $DIR/pfs.hdrgen $DIR/pfs_updated.hdrgen
+	rm -f $DIR/*.tif $DIR/pfs.hdrgen $DIR/pfs_updated.hdrgen
+	if [ $PRESERVE_HDR = 0 ]; then
+		rm -f $DIR/pfs.hdr
+	fi
 	if [ $filetype != "JPG" ]; then
 		rm -f $DIR/$JPEGFILENAME
 	fi

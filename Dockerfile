@@ -1,39 +1,17 @@
-FROM debian:stretch
+FROM debian:jessie
 
 MAINTAINER Jan Losinski <losinski@wh2.tu-dresden.de>
 
 ADD sources.list /etc/apt/sources.list
 
-RUN apt-get update && \
-	apt-get -y install --no-install-recommends \
-		ufraw \
-		enfuse \
-		jhead \
-		gimp \
-		build-essential \
-		cmake \
-		git \
-		libgtk2.0-dev \
-		pkg-config \
-		libavcodec-dev \
-		libavformat-dev \
-		libswscale-dev \
-		python-dev \
-		python-numpy \
-		libtbb2 \
-		libtbb-dev \
-		libjpeg-dev \
-		libpng-dev \
-		libtiff-dev \
-		libjasper-dev \
-		libdc1394-22-dev \
-		unzip \
-	&& \
-	apt-get -y build-dep libcv2.4 && \
-	apt-get -y build-dep pfstools && \
-	apt-get -y install libgsl0-dev && \
-	apt-get -y remove liboctave-dev && \
-	apt-get clean
+RUN apt-get update
+RUN apt-get -y install ufraw enfuse jhead gimp build-essential cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev unzip
+#RUN apt-get -y install openjdk-7-jre
+#RUN apt-get -y build-dep libcv2.4
+#RUN apt-get -y build-dep pfstools
+#RUN apt-get -y install libgsl0-dev
+#RUN apt-get -y remove liboctave-dev
+RUN apt-get clean
 
 WORKDIR /tmp
 

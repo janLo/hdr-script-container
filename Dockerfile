@@ -8,7 +8,7 @@ WORKDIR /tmp
 RUN apt-get update
 RUN apt-get -y install wget ufraw enfuse jhead gimp build-essential cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev unzip dcraw ufraw-batch hugin-tools
 
-RUN wget https://github.com/Itseez/opencv/archive/2.4.11.zip -O opencv-2.4.11.zip
+RUN wget https://github.com/Itseez/opencv/archive/2.4.11.zip && mv 2.4.11.zip opencv-2.4.11.zip
 RUN wget http://downloads.sourceforge.net/project/pfstools/pfstools/2.0.4/pfstools-2.0.4.tgz
 
 #RUN apt-get -y install openjdk-7-jre

@@ -24,7 +24,8 @@ RUN unzip -x opencv-2.4.11.zip && \
 	cd /tmp && rm -rf opencv-2.4.11
 
 RUN wget http://downloads.sourceforge.net/project/pfstools/pfstools/2.0.4/pfstools-2.0.4.tgz?r=&ts=1481902322&use_mirror=superb-dca2
-RUN cd pfstools-2.0.4 && \
+RUN unzip -x pfstools-2.0.4 && \
+    cd pfstools-2.0.4 && \
 	mkdir build && cd  build && \
 	cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local .. && \
 	make -j4 && make install && \
